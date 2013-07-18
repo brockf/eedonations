@@ -985,8 +985,9 @@ class Eedonations {
 			// validate amount and interval
 			$amount = ($this->EE->input->post('custom_amount') and $this->config['allow_custom_amounts'] == TRUE) ? $this->EE->input->post('custom_amount') : $this->EE->input->post('amount');
 			$interval = ($this->EE->input->post('custom_interval') and $this->config['allow_custom_intervals'] == TRUE) ? $this->EE->input->post('custom_interval') : $this->EE->input->post('interval');
+            $occurrences = ($this->EE->input->post('occurrences') and $this->config['allow_custom_intervals'] == TRUE) ? $this->EE->input->post('occurrences') : false;
 
-			// clean amount and interval
+			// clean amount and interval and occurrences
 			if (!empty($amount)) {
 				$amount = preg_replace('/[^0-9\.]+/i','',$amount);
 			}
@@ -994,6 +995,10 @@ class Eedonations {
 			if (!empty($interval)) {
 				$interval = preg_replace('/[^0-9]+/i','',$interval);
 			}
+
+            if (!empty($occurrences)) {
+                $occurrences = preg_replace('/[^0-9]+/i','',$occurrences);
+            }
 
 			// do we have an interval that needs validating?
 			if (!empty($interval)) {
@@ -1013,6 +1018,9 @@ class Eedonations {
 				// set it as a nice clean boolean value
 				$interval = FALSE;
 			}
+
+            // Determine our end date if we have an interval and occurrences.
+            $end_date = $interval && $occurrences ? date('Y-m-d', strtotime( '+'. ($interval * $occurrences) .' days' ) ) : false;
 
 			// if we are renewing, we require an interval
 			if (!empty($renew_subscription) and empty($interval)) {
@@ -1116,7 +1124,7 @@ class Eedonations {
 				$this->EE->functions->set_cookie('eedonations_custom_fields', serialize($custom_fields), (60*60));
 
 				// process donation
-				$response = $this->eedonations_class->Donate($amount, $interval, $member_id, $credit_card, $customer, FALSE, $gateway_id, FALSE, FALSE, $renew_subscription);
+				$response = $this->eedonations_class->Donate($amount, $interval, $member_id, $credit_card, $customer, $end_date, $gateway_id, FALSE, FALSE, $renew_subscription);
 
 				if (isset($response['error'])) {
 					$errors[] = $this->EE->lang->line('eedonations_donate_form_error_processing') . ': ' . $response['error_text'] . ' (#' . $response['error'] . ')';

@@ -116,5 +116,6 @@ $lang = array(
 	'eedonations_maximum_amount' => 'Maximum Donation Amount',
 	'eedonations_minimum_amount' => 'Minimum Donation Amount',
 	'eedonations_available_countries' => 'Available Countries',
-	'eedonations_gateway' => 'Gateway'
+	'eedonations_gateway' => 'Gateway',
+	'eedonations_donate_form_occurrences' => 'Occurrences'
 );
