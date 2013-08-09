@@ -1256,12 +1256,17 @@ class Eedonations {
 		// prep amount fields
 		$amounts = $this->config['amounts'];
 
+        $selected_amount = isset($amount) ? $amount : null;
+
 		$amount_options = '';
 		foreach ($amounts as $amount => $name) {
-			$amount_options .= '<option value="' . $amount . '">' . $name . ' (' . $this->config['currency_symbol'] . $amount . ')</option>';
+            $selected = $amount == $selected_amount ? 'selected="selected"' : '';
+			$amount_options .= '<option value="' . $amount . '" '. $selected .'>' . $name . ' (' . $this->config['currency_symbol'] . $amount . ')</option>';
 		}
 
 		$variables['amount_options'] = $amount_options;
+
+        $variables['custom_amount'] = ($this->EE->input->post('custom_amount') and $this->config['allow_custom_amounts'] == TRUE) ? $this->EE->input->post('custom_amount') : '';
 
 		// prep credit card fields
 
