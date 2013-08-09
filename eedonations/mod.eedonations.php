@@ -1382,6 +1382,15 @@ class Eedonations {
 	    }
 	    $variables['errors'] = $error_string;
 
+        // Any custom variable values to make avaiable to the form?
+        if (is_array($custom_fields) && count($custom_fields))
+        {
+            foreach ($custom_fields as $name => $value)
+            {
+                $variables[ 'custom_field_'. str_replace(' ', '_', strtolower($name)) ] = $value;
+            }
+        }
+
 	    // parse the tag content with our new variables
 	    $var_data = array();
 	    $var_data[0] = $variables;
