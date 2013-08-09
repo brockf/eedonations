@@ -1383,7 +1383,7 @@ class Eedonations {
 	    $variables['errors'] = $error_string;
 
         // Any custom variable values to make avaiable to the form?
-        if (is_array($custom_fields) && count($custom_fields))
+        if (isset($custom_fields) && is_array($custom_fields) && count($custom_fields))
         {
             foreach ($custom_fields as $name => $value)
             {
