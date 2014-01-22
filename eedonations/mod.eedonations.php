@@ -919,7 +919,7 @@ class Eedonations {
 										'language' => $this->EE->config->item('language'),
 										'timezone' => $this->EE->config->item('server_timezone'),
 										'time_format' => $this->EE->config->item('time_format'),
-										'daylight_savings' => $this->EE->config->item('daylight_savings'),
+										//'daylight_savings' => $this->EE->config->item('daylight_savings'),
 										'ip_address' => $this->EE->input->ip_address(),
 										'join_date' => $this->EE->localize->now,
 										'email' => $email,
