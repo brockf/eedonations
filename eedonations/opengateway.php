@@ -1,5 +1,5 @@
 <?php
- 
+
 /**
 * OpenGateway Class
 *
@@ -13,17 +13,17 @@
 
 if (!class_exists('OpenGateway')) {
 	class OpenGateway
-	{		
+	{
 		public $params;
 		public $post_url;
 		public $api_id;
 		public $secret_key;
-		
+
 		/**
 		* Authenticate
 		*
 		* Set the API ID, Secret Key, and Server
-		* 
+		*
 		* @param string $api_id API Identifier
 		* @param string $secret_key Secret Key
 		* @param string $server Secure URL for the OpenGateway server (optional)
@@ -33,10 +33,10 @@ if (!class_exists('OpenGateway')) {
 			$this->api_id = $api_id;
 			$this->secret_key = $secret_key;
 			$this->post_url = $server;
-			
+
 			return true;
 		}
-	
+
 		/**
 		* Set Request Type
 		*
@@ -47,30 +47,36 @@ if (!class_exists('OpenGateway')) {
 		*/
 		public function SetMethod($method)  {
 			$this->method = ucwords($method);
-			
+
 			return true;
 		}
-		
-		/**
-		* Set a Parameter
-		*
-		* Sets a parameter for the request
-		*
-		* @param string $name Name of the parameter
-		* @param string $value The Value
-		* @param string $parent The parent node name (optional)
-		* @return bool true;
-		*/
-	    public function Param($name, $value, $parent = FALSE)  {
+
+		public function Param($name, $value, $parent = FALSE)  {
+			if (!isset($this->params))
+			{
+				$this->params = new stdClass();
+			}
+
 	        if($parent) {
-	       	   $this->params->$parent->$name = (string)$value;
+	        	if (!isset($this->params->$parent)) $this->params->$parent = new stdClass();
+	        	$this->params->$parent->$name = new stdClass();
+	        	$this->params->$parent->$name = htmlspecialchars((string)$value, null, 'UTF-8');
 	        } else {
-	      	   $this->params->$name = (string)$value;
+	        	if ($name != 'return_url' && $name != 'cancel_url')
+	        	{
+	        		$this->params->$name = new stdClass();
+		        	$this->params->$name = htmlspecialchars((string)$value, null, 'UTF-8');
+	        	}
+	        	else
+	        	{
+	        		$this->params->$name = new stdClass();
+		        	$this->params->$name = $value;
+	        	}
 	        }
-	        
+
 	        return true;
 	    }
-	
+
 		/**
 	    * Use a Coupon
 	    *
@@ -78,8 +84,8 @@ if (!class_exists('OpenGateway')) {
 	    */
 	    public function Coupon($coupon_code) {
 	    	$this->params->coupon = $coupon_code;
-	    }	
-		
+	    }
+
 		/**
 		* Process the Request
 		*
@@ -92,7 +98,7 @@ if (!class_exists('OpenGateway')) {
 			if ($this->post_url == '') {
 				return FALSE;
 			}
-			
+
 		    // See which params are set
 		    $i=0;
 		    if(isset($this->params)) {
@@ -105,30 +111,30 @@ if (!class_exists('OpenGateway')) {
 			      		$xml_params[$i] .= '</'.$key.'>';
 			      	} else {
 			      		$xml_params[$i] = '<'.strtolower($key).'>'.$value.'</'.strtolower($key).'>';
-			      	}	
+			      	}
 			      	$i++;
 			    }
-		    }	
-		      
+		    }
+
 		    // put our XML together
 		    $xml = '<?xml version="1.0" encoding="UTF-8"?><request>';
 		    if(isset($this->api_id) AND isset($this->secret_key)) {
 		    	$xml .= '<authentication><api_id>' . $this->api_id . '</api_id><secret_key>' . $this->secret_key . '</secret_key></authentication>';
 		    }
-			
+
 		    if(isset($this->method)) {
 		    	$xml .= '<type>'.$this->method.'</type>';
 		    }
-		    
+
 		    if(isset($xml_params)) {
 		    	foreach($xml_params as $xml_param)
 		    	{
 		    		$xml .= $xml_param;
 		    	}
 		    }
-	
+
 		    $xml .= '</request>';
-		    
+
 		    if ($debug) {
 		    	$xml = simplexml_load_string($xml);
 		    	$doc = new DOMDocument('1.0');
@@ -136,49 +142,47 @@ if (!class_exists('OpenGateway')) {
 	        	$doc->loadXML($xml->asXML());
 	        	$doc->formatOutput = true;
 	        	echo $doc->saveXML();
-	        	
+
 	        	return true;
 		    }
-		     
 			$ch = curl_init();
-			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE); 
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
 			curl_setopt($ch, CURLOPT_URL, $this->post_url);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 			curl_setopt($ch, CURLOPT_TIMEOUT, 60);
-			curl_setopt($ch, CURLOPT_POSTFIELDS, $xml); 
-			
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $xml);
+
 			$data = curl_exec($ch);
-		//echo '<pre>'. print_r($data, true);
 			if (curl_errno($ch)) {
 			    print curl_error($ch);
 			}
 			else {
 				curl_close($ch);
-				
+
 				// empty parameters
 				$this->params = new stdClass;
-				
+
 				// check for a system error
 				if (strpos($data, '<div') === 0) {
 					// this isn't XML, it's an error
 					$error = strip_tags($data);
-					
+
 					echo 'A system error was incurred in the process of the ' . $this->method . ' call: ' . $error;
 					return FALSE;
-				}	
-					
+				}
+
 				$xml = $this->toArray($data);
-				
+
 				// automatically redirect if we received a <redirect> node
 				if (isset($xml['redirect']) and !empty($xml['redirect'])) {
 					header('Location: ' . $xml['redirect']);
 					die();
 				}
-				
+
 			    return $xml;
 			}
 		}
-		
+
 		/**
 		* Convert XML to PHP Array
 		*
@@ -192,18 +196,19 @@ if (!class_exists('OpenGateway')) {
 		* @return array PHP array
 		*/
 		private function toArray($xml) {
+
 	        if (is_string($xml)) $xml = new SimpleXMLElement($xml);
 	        $children = $xml->children();
 	        if ( !$children ) return (string) $xml;
 	        $arr = array();
 	        foreach ($children as $key => $node) {
 	            $node = $this->toArray($node);
-	
+
 	            // support for 'anon' non-associative arrays
 	            if ($key == 'anon') {
 	            	$key = count($arr);
 	            }
-	
+
 	            // if the node is already set, put it into an array
 	            if (isset($arr[$key])) {
 	                if (!is_array($arr[$key]) || !isset($arr[$key][0]) || $arr[$key][0] == null) {
@@ -214,11 +219,11 @@ if (!class_exists('OpenGateway')) {
 	                $arr[$key] = $node;
 	            }
 	        }
-	        
+
 	        return $arr;
-	    }			 
-	}	
-	
+	    }
+	}
+
 	/**
 	* Charges Class Extension
 	*
@@ -227,8 +232,8 @@ if (!class_exists('OpenGateway')) {
 	* @author Electric Function, Inc.
 	* @version 1.0
 	* @copyright 2010, Electric Function, Inc.
-	*/	
-	class Charge extends OpenGateway 
+	*/
+	class Charge extends OpenGateway
 	{
 		/**
 		* Set Amount
@@ -240,10 +245,10 @@ if (!class_exists('OpenGateway')) {
 		*/
 		public function Amount($amount)  {
 			$this->Param('amount', $amount);
-			
+
 			return true;
 		}
-		
+
 		/**
 		* Set Credit Card
 		*
@@ -259,7 +264,7 @@ if (!class_exists('OpenGateway')) {
 		public function CreditCard($name, $number, $exp_month, $exp_year, $security_code = FALSE)  {
 			$number = str_replace(' ','',$number);
 			$number = trim($number);
-			
+
 			$this->Param('name', $name, 'credit_card');
 			$this->Param('card_num', $number, 'credit_card');
 			$this->Param('exp_month', $exp_month, 'credit_card');
@@ -267,10 +272,10 @@ if (!class_exists('OpenGateway')) {
 			if($security_code) {
 				$this->Param('cvv', $security_code, 'credit_card');
 			}
-			
+
 			return true;
 		}
-		
+
 		/**
 		* Set customer data
 		*
@@ -299,10 +304,10 @@ if (!class_exists('OpenGateway')) {
 			$this->Param('postal_code', $postal_code, 'customer');
 			$this->Param('phone', $phone, 'customer');
 			$this->Param('email', $email, 'customer');
-			
+
 			return true;
 		}
-		
+
 		/**
 		* Use a Customer ID
 		*
@@ -313,10 +318,10 @@ if (!class_exists('OpenGateway')) {
 		*/
 		public function UseCustomer ($customer_id) {
 			$this->Param('customer_id',$customer_id);
-			
+
 			return true;
 		}
-		
+
 		/**
 		* Set Gateway ID
 		*
@@ -327,25 +332,25 @@ if (!class_exists('OpenGateway')) {
 		*/
 		public function UseGateway($gateway_id)  {
 			$this->Param('gateway_id', $gateway_id);
-			
+
 			return true;
 		}
-		
+
 		/**
 		* Process Charge
 		*
 		* @param bool $debug Set to TRUE to return the request XML and not send the request.
 		* @return array Response array
-		*/ 
+		*/
 		public function Charge($debug = FALSE)  {
 			// add IP address
 			$this->Param('customer_ip_address',$_SERVER["REMOTE_ADDR"]);
-			
+
 			$this->SetMethod('Charge');
 			return $this->Process($debug);
 		}
 	}
-	
+
 	/**
 	* Recur Class Extension
 	*
@@ -355,8 +360,8 @@ if (!class_exists('OpenGateway')) {
 	* @version 1.0
 	* @copyright 2010, Electric Function, Inc.
 	*/
-	class Recur extends OpenGateway 
-	{	
+	class Recur extends OpenGateway
+	{
 		/**
 		* Set Amount
 		*
@@ -367,10 +372,10 @@ if (!class_exists('OpenGateway')) {
 		*/
 		public function Amount($amount)  {
 			$this->Param('amount', $amount);
-			
+
 			return true;
 		}
-		
+
 		/**
 		* Set Credit Card
 		*
@@ -386,7 +391,7 @@ if (!class_exists('OpenGateway')) {
 		public function CreditCard($name, $number, $exp_month, $exp_year, $security_code = FALSE)  {
 			$number = str_replace(' ','',$number);
 			$number = trim($number);
-			
+
 			$this->Param('name', $name, 'credit_card');
 			$this->Param('card_num', $number, 'credit_card');
 			$this->Param('exp_month', $exp_month, 'credit_card');
@@ -394,10 +399,10 @@ if (!class_exists('OpenGateway')) {
 			if($security_code) {
 				$this->Param('cvv', $security_code, 'credit_card');
 			}
-			
+
 			return true;
 		}
-		
+
 		/**
 		* Set customer data
 		*
@@ -426,10 +431,10 @@ if (!class_exists('OpenGateway')) {
 			$this->Param('postal_code', $postal_code, 'customer');
 			$this->Param('phone', $phone, 'customer');
 			$this->Param('email', $email, 'customer');
-			
+
 			return true;
 		}
-		
+
 		/**
 		* Use a Customer ID
 		*
@@ -440,10 +445,10 @@ if (!class_exists('OpenGateway')) {
 		*/
 		public function UseCustomer ($customer_id) {
 			$this->Param('customer_id',$customer_id);
-			
+
 			return true;
 		}
-		
+
 		/**
 		* Use a Plan ID
 		*
@@ -454,10 +459,10 @@ if (!class_exists('OpenGateway')) {
 		*/
 		public function UsePlan($plan_id)  {
 			$this->Param('plan_id', $plan_id, 'recur');
-			
+
 			return true;
 		}
-		
+
 		/**
 		* Set Gateway ID
 		*
@@ -468,10 +473,10 @@ if (!class_exists('OpenGateway')) {
 		*/
 		public function UseGateway($gateway_id)  {
 			$this->Param('gateway_id', $gateway_id);
-			
+
 			return true;
 		}
-		
+
 		/**
 		* Set Recurring Schedule
 		*
@@ -497,20 +502,20 @@ if (!class_exists('OpenGateway')) {
 			}
 			if($end_date) {
 				$this->Param('end_date', $end_date, 'recur');
-			}	
-			
+			}
+
 			return true;
 		}
-		
+
 		/**
 		* Process Charge
 		*
 		* @param bool $debug Set to TRUE to return the request XML and not send the request.
 		* @return array Response array
-		*/ 
+		*/
 		public function Charge($debug = FALSE)  {
 			$this->Param('customer_ip_address',$_SERVER["REMOTE_ADDR"]);
-			
+
 			$this->SetMethod('Recur');
 			return $this->Process($debug);
 		}
