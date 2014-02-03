@@ -1421,7 +1421,7 @@ class Eedonations {
 		$server->Authenticate($this->config['api_id'], $this->config['secret_key'], $connect_url);
 
     	// first, we'll check for external payment API redirects
-    	if ($this->EE->input->get('member') and !$this->EE->input->post('action')) {
+    	if ($this->EE->input->get('member') and !$this->EE->input->get_post('action')) {
     		// get customer ID
     		$server->SetMethod('GetCustomers');
     		$server->Param('internal_id',$this->EE->input->get('member'));
@@ -1574,17 +1574,17 @@ class Eedonations {
     	}
 
     	// is the secret key OK?  ie. is this a legitimate call?
-		if ($this->EE->input->post('secret_key') != $this->config['secret_key']) {
+		if ($this->EE->input->get_post('secret_key') != $this->config['secret_key']) {
 			die('Invalid secret key.');
 		}
 
-		if (!$this->EE->input->post('customer_id') or !$this->EE->input->post('recurring_id')) {
+		if (!$this->EE->input->get_post('customer_id') or !$this->EE->input->get_post('recurring_id')) {
 			die('Insufficient data.');
 		}
 
 		// get customer data from server
 		$server->SetMethod('GetCustomer');
-		$server->Param('customer_id',$this->EE->input->post('customer_id'));
+		$server->Param('customer_id',$this->EE->input->get_post('customer_id'));
 		$response = $server->Process();
 
 		if (!is_array($response) or !isset($response['customer'])) {
@@ -1595,29 +1595,29 @@ class Eedonations {
 		}
 
 		// get subscription data locally
-		$subscription = $this->eedonations_class->GetSubscription($this->EE->input->post('recurring_id'));
+		$subscription = $this->eedonations_class->GetSubscription($this->EE->input->get_post('recurring_id'));
 
 		if (!$subscription) {
 			die('Error retrieving subscription data locally.');
 		}
 
-		if ($this->EE->input->post('action') == 'recurring_charge') {
-			if (!$this->EE->input->post('charge_id')) {
+		if ($this->EE->input->get_post('action') == 'recurring_charge') {
+			if (!$this->EE->input->get_post('charge_id')) {
 				die('No charge ID.');
 			}
 
-			if (is_array($this->eedonations_class->GetPayments(0,1,array('id' => $this->EE->input->post('charge_id'))))) {
+			if (is_array($this->eedonations_class->GetPayments(0,1,array('id' => $this->EE->input->get_post('charge_id'))))) {
 		 		die('Charge already recorded.');
 		 	}
 
 			$server->SetMethod('GetCharge');
-			$server->Param('charge_id',$this->EE->input->post('charge_id'));
+			$server->Param('charge_id',$this->EE->input->get_post('charge_id'));
 			$charge = $server->Process();
 
 			$charge = $charge['charge'];
 
 		 	// record charge
-			$this->eedonations_class->RecordPayment($this->EE->input->post('recurring_id'), $this->EE->input->post('charge_id'), $customer['internal_id'], $charge['amount']);
+			$this->eedonations_class->RecordPayment($this->EE->input->get_post('recurring_id'), $this->EE->input->get_post('charge_id'), $customer['internal_id'], $charge['amount']);
 
 			// set next charge
 			$next_charge_date = strtotime('now + ' . $subscription['interval'] . ' days');
@@ -1631,12 +1631,12 @@ class Eedonations {
 				$next_charge_date = date('Y-m-d',$next_charge_date);
 			}
 
-			$this->eedonations_class->SetNextCharge($this->EE->input->post('recurring_id'),$next_charge_date);
+			$this->eedonations_class->SetNextCharge($this->EE->input->get_post('recurring_id'),$next_charge_date);
 		}
-		elseif ($this->EE->input->post('action') == 'recurring_cancel') {
+		elseif ($this->EE->input->get_post('action') == 'recurring_cancel') {
 			$this->eedonations_class->CancelSubscription($subscription['id'],FALSE);
 		}
-		elseif ($this->EE->input->post('action') == 'recurring_expire' or $this->EE->input->post('action') == 'recurring_fail') {
+		elseif ($this->EE->input->get_post('action') == 'recurring_expire' or $this->EE->input->get_post('action') == 'recurring_fail') {
 			$this->eedonations_class->CancelSubscription($subscription['id'],FALSE,TRUE);
 		}
     }
