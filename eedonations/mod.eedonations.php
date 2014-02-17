@@ -1401,6 +1401,12 @@ class Eedonations {
 	    $var_data[0] = $variables;
 
 		$sub_return = $this->EE->TMPL->parse_variables($sub_return, $var_data);
+		
+		// EE 2.7 has made XID's mandatory in all requests... so let's hack it in there
+		if (!defined('XID_SECURE_HASH')) {
+			define('XID_SECURE_HASH',$this->EE->security->generate_xid());
+		}
+		$sub_return = str_replace('</form>', '<input type="hidden" name="XID" value="' . XID_SECURE_HASH . '" /></form>', $sub_return);
 
     	$this->return_data = $sub_return;
 
