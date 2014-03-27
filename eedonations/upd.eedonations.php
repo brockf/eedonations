@@ -16,7 +16,7 @@
 */
 
 class EEDonations_upd {
-	var $version = '1.18';
+	var $version = '1.19';
 	var $EE;
 
 	function EEDonations_upd () {

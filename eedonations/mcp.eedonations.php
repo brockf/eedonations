@@ -114,6 +114,14 @@ class Eedonations_mcp {
         								});
         							</script>');
 	}
+	
+	function set_page_title ($title) {
+		if ($this->EE->config->item('app_version') >= 260) {
+			$this->EE->view->cp_page_title = $title;
+		} else {
+			$this->set_page_title($title);
+		}
+	}
 
 	function index () {
 		// if not configured, send to settings
@@ -123,7 +131,7 @@ class Eedonations_mcp {
 		}
 
 		// page title
-		$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('eedonations_module_name'));
+		$this->set_page_title($this->EE->lang->line('eedonations_module_name'));
 
 		// get latest payments
 		$payments = $this->eedonations_class->GetPayments(0,10);
@@ -182,7 +190,12 @@ class Eedonations_mcp {
 	}
 
 	function cp_url ($action = 'index', $variables = array()) {
-		$url = BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp' . AMP . 'module=eedonations'.AMP.'method=' . $action;
+		if ($this->EE->config->item('app_version') >= 280) {
+			$url = cp_url('addons_modules/show_module_cp', array_merge(array('module' => 'eedonations','method' => $action), $variables));
+		}
+		else {
+			$url = BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp' . AMP . 'module=eedonations'.AMP.'method=' . $action;
+		}
 
 		foreach ($variables as $variable => $value) {
 			$url .= AMP . $variable . '=' . $value;
@@ -192,7 +205,12 @@ class Eedonations_mcp {
 	}
 
 	function form_url ($action = 'index', $variables = array()) {
-		$url = AMP.'C=addons_modules'.AMP.'M=show_module_cp' . AMP . 'module=eedonations'.AMP.'method=' . $action;
+		if ($this->EE->config->item('app_version') >= 280) {
+			$url = 'C=addons_modules'.AMP.'M=show_module_cp' . AMP . 'module=eedonations'.AMP.'method=' . $action;
+		}
+		else {
+			$url = AMP.'C=addons_modules'.AMP.'M=show_module_cp' . AMP . 'module=eedonations'.AMP.'method=' . $action;
+		}
 
 		foreach ($variables as $variable => $value) {
 			$url .= AMP . $variable . '=' . $value;
@@ -207,21 +225,26 @@ class Eedonations_mcp {
 			return FALSE;
 		}
 
-		$url = BASE.AMP.'D=cp'.AMP.'C=myaccount'.AMP.'id='. $member_id;
+		if ($this->EE->config->item('app_version') >= 280) {
+			$url = cp_url('myaccount', array('id' => $member_id));
+		}
+		else {
+			$url = BASE.AMP.'D=cp'.AMP.'C=myaccount'.AMP.'id='. $member_id;
+		}
 
 		return $url;
 	}
 
 	function custom_fields () {
 		// page title
-		$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('eedonations_custom_fields'));
+		$this->set_page_title($this->EE->lang->line('eedonations_custom_fields'));
 
 		return $this->EE->load->view('custom_fields', FALSE, TRUE);
 	}
 
 	function payments () {
 		// page title
-		$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('eedonations_payments'));
+		$this->set_page_title($this->EE->lang->line('eedonations_payments'));
 
 		// get pagination
 		$offset = ($this->EE->input->get('rownum')) ? $this->EE->input->get('rownum') : 0;
@@ -295,7 +318,7 @@ class Eedonations_mcp {
 		$payment = $payment[0];
 
 		// page title
-		$this->EE->cp->set_variable('cp_page_title', 'Donation ID #' . $payment['id']);
+		$this->set_page_title('Donation ID #' . $payment['id']);
 
 		$payment['member_link'] = (!empty($payment['member_id'])) ? $this->member_link($payment['member_id']) : '';
 
@@ -376,7 +399,7 @@ class Eedonations_mcp {
 
 	function subscriptions () {
 		// page title
-		$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('eedonations_subscriptions'));
+		$this->set_page_title($this->EE->lang->line('eedonations_subscriptions'));
 
 		// get pagination
 		$offset = ($this->EE->input->get('rownum')) ? $this->EE->input->get('rownum') : 0;
@@ -448,7 +471,7 @@ class Eedonations_mcp {
 
 	function subscription () {
 		// page title
-		$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('eedonations_subscription'));
+		$this->set_page_title($this->EE->lang->line('eedonations_subscription'));
 
 		$subscription = $this->eedonations_class->GetSubscription($this->EE->input->get('id'));
 
@@ -531,7 +554,7 @@ class Eedonations_mcp {
 	}
 
 	function expiry () {
-		$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('eedonations_change_expiry_title'));
+		$this->set_page_title($this->EE->lang->line('eedonations_change_expiry_title'));
 
 		$recurring_id = $this->EE->input->get('id');
 		$subscription = $this->eedonations_class->GetSubscription($recurring_id);
@@ -618,7 +641,7 @@ class Eedonations_mcp {
 	}
 
 	function update_cc () {
-		$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('eedonations_update_cc_title'));
+		$this->set_page_title($this->EE->lang->line('eedonations_update_cc_title'));
 
 		$recurring_id = $this->EE->input->get('id');
 		$subscription = $this->eedonations_class->GetSubscription($recurring_id);
@@ -767,7 +790,7 @@ class Eedonations_mcp {
 	//--------------------------------------------------------------------
 
 	function create () {
-		$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('eedonations_create_donation'));
+		$this->set_page_title($this->EE->lang->line('eedonations_create_donation'));
 
 		// shall we pass this off?
 		if (!$this->EE->input->post('member_search') and $this->EE->input->post('member_id')) {
@@ -811,7 +834,7 @@ class Eedonations_mcp {
 			return $this->create();
 		}
 
-		$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('eedonations_create_donation'));
+		$this->set_page_title($this->EE->lang->line('eedonations_create_donation'));
 
 		$this->EE->load->helper('form');
 		$this->EE->load->library('form_validation');
@@ -987,7 +1010,7 @@ class Eedonations_mcp {
 	}
 
 	function settings () {
-		$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('eedonations_settings'));
+		$this->set_page_title($this->EE->lang->line('eedonations_settings'));
 
 		$this->EE->load->helper('form');
 		$this->EE->load->library('form_validation');
@@ -1206,7 +1229,7 @@ class Eedonations_mcp {
 	}
 
 	function countries () {
-		$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('eedonations_available_countries'));
+		$this->set_page_title($this->EE->lang->line('eedonations_available_countries'));
 
 		 $this->EE->cp->add_to_head('<script type="text/javascript">
         								function uncheck_countries () {
