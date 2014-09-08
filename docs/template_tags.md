@@ -122,7 +122,7 @@ The order form must be configured in the following manner:
 	It is recommended to use JavaScript to show/hide the "region_other" input box, depending on their
 	country selection.
 
-Between the two <span class="tag">{exp:eedonations:donate_form}</span> <span class="tag">{/exp:eedonations:donate_form}</span> tags,
+Between the two `{exp:eedonations:donate_form}` `{/exp:eedonations:donate_form}` tags,
 you can use any of the following variables in the building of your form:
 
 *   **first_name**
@@ -185,7 +185,7 @@ Finally, these fields are also optional:
 *   **gateway** - Specify the OpenGateway gateway_id to process the transaction with.  This allows you to give your users
 	a choice of gateways when donating.
 
-### Renewals
+#### Renewals
 
 If you would like the donation subscription being created to act as a renewal for a previous subscription, you can pass along a hidden input field named
 "renew" with the value of the subscription ID being renewed.
@@ -195,7 +195,7 @@ so the "interval" value must be greater than zero.
 
 Renewal subscriptions do not start until the previous subscription ends (i.e., the user will continue with their regular donation schedule).
 
-Example renewal form (where <span class="tag">{segment_3}</span> holds an old subscription_id):
+Example renewal form (where `{segment_3}` holds an old subscription_id):
 
 <pre class="example">
 	{exp:eedonations:donate_form}
@@ -205,7 +205,7 @@ Example renewal form (where <span class="tag">{segment_3}</span> holds an old su
 	&lt;/form&gt;
 </pre>
 
-### Combined Member Registration &amp; Donation
+#### Combined Member Registration &amp; Donation
 
 This function allows for EE member registration and donation to happen all in one order form.  Thus, users are not
 required to be logged-in to an existing EE member account before using the donation form.
@@ -221,7 +221,7 @@ Implementation Notes:
 *   If the payment fails, the newly created account will be immediately deleted so as to let them complete the form again.
 
 If you do use this registration feature, you should wrap your "password" (and, optionally, "username" and "screen_name") fields
-with <span class="tag">{if logged_out}</span> and <span class="tag">{/if}</span> so that logged in users do not create new accounts.
+with `{if logged_out}` and `{/if}` so that logged in users do not create new accounts.
 
 ### &#123;exp:eedonations:receipt&#125;</a>
 
@@ -246,21 +246,21 @@ Returns:
 
 *   Single Variable Values:
 
-    *   <span class="tag">{charge_id}</span>
-    *   <span class="tag">{member_id}</span> (if applicable)
-    *   <span class="tag">{amount}</span>
-    *   <span class="tag">{subscription_id}</span> (if applicable)
-    *   <span class="tag">{next_charge_date}</span> (if applicable)
-    *   <span class="tag">{donor_first_name}</span>
-    *   <span class="tag">{donor_last_name}</span>
-    *   <span class="tag">{donor_address}</span>
-    *   <span class="tag">{donor_address_2}</span>
-    *   <span class="tag">{donor_city}</span>
-    *   <span class="tag">{donor_region}</span>
-    *   <span class="tag">{donor_country}</span>
-    *   <span class="tag">{donor_postal_code}</span>
-    *   <span class="tag">{donor_company}</span>
-    *   <span class="tag">{donor_phone}</span>
+    *   `{charge_id}`
+    *   `{member_id}` (if applicable)
+    *   `{amount}`
+    *   `{subscription_id}` (if applicable)
+    *   `{next_charge_date}` (if applicable)
+    *   `{donor_first_name}`
+    *   `{donor_last_name}`
+    *   `{donor_address}`
+    *   `{donor_address_2}`
+    *   `{donor_city}`
+    *   `{donor_region}`
+    *   `{donor_country}`
+    *   `{donor_postal_code}`
+    *   `{donor_company}`
+    *   `{donor_phone}`
 
 ### &#123;exp:eedonations:update_form&#125;</a>
 
@@ -368,7 +368,7 @@ If they are outside of North America, they should populate a text input field na
 It is recommended to use JavaScript to show/hide the "region_other" input box, depending on their
 country selection.
 
-Between the two <span class="tag">{exp:eedonations:update_form}</span> <span class="tag">{/exp:eedonations:update_form}</span> tags,
+Between the two `{exp:eedonations:update_form}` `{/exp:eedonations:update_form}` tags,
 you can use any of the following variables in the building of your form:
 
 *   **first_name**
@@ -453,38 +453,38 @@ Returns:
 
 *   Single Variable Values:
 
-    *   <span class="tag">{subscription_id}</span>
-    *   <span class="tag">{amount}</span>
-    *   <span class="tag">{interval}</span>
-    *   <span class="tag">{date_created}</span>
-    *   <span class="tag">{date_cancelled}</span> (if exists) - The date the subscription was cancelled by the user.
-    *   <span class="tag">{next_charge_date}</span> (if exists) - The date of the next charge
-    *   <span class="tag">{end_date}</span> (if exists) - The date this subscription will expire
+    *   `{subscription_id}`
+    *   `{amount}`
+    *   `{interval}`
+    *   `{date_created}`
+    *   `{date_cancelled}` (if exists) - The date the subscription was cancelled by the user.
+    *   `{next_charge_date}` (if exists) - The date of the next charge
+    *   `{end_date}` (if exists) - The date this subscription will expire
 *   Conditionals:
 
-    *   <span class="tag">active</span> - Subscription is still actively recurring.
-<pre class="example"><div class="codeblock">`<span style="color: #000000">
-<span style="color: #0000BB">{if active}Your next charge will be {next_charge_date}{</span><span style="color: #007700">/</span><span style="color: #0000BB">if} </span>
-</span>
-`</div></pre>
-    *   <span class="tag">renewed</span> - Subscription has been renewed.  Another subscription will simultaneously be active (the renewing subscription).
-<pre class="example"><div class="codeblock">`
-{if renewed}This subscription has been renewed.{/if}
-`</div></pre>
-    *   <span class="tag">cancelled</span> - Subscription was cancelled by the user
+    *   `active` - Subscription is still actively recurring.
+    
+    ```
+    {if active}Your next charge will be {next_charge_date}{/if} 
+    ```
 
-        <pre class="example"><div class="codeblock">`<span style="color: #000000">
-<span style="color: #0000BB">{if user_cancelled}You cancelled this subscription on {date_cancelled} </span><span style="color: #007700">and </span><span style="color: #0000BB">it will expire on {end_date}{</span><span style="color: #007700">/</span><span style="color: #0000BB">if} </span>
+    *   `renewed` - Subscription has been renewed.  Another subscription will simultaneously be active (the renewing subscription).
 
-        </span>
-`</div></pre>
-    *   <span class="tag">expired</span> - Subscription has expired completely.
+	```
+	{if renewed}This subscription has been renewed.{/if}
+	```
 
-        <pre class="example"><div class="codeblock">`<span style="color: #000000">
-<span style="color: #0000BB">{if expired}This subscription has expired</span><span style="color: #007700">, </span><span style="color: #0000BB">either by user cancellation </span><span style="color: #007700">or </span><span style="color: #0000BB">failed payment</span><span style="color: #007700">.  </span><span style="color: #0000BB">But its over</span><span style="color: #007700">.  And </span><span style="color: #0000BB">it ended on {end_date}{</span><span style="color: #007700">/</span><span style="color: #0000BB">if} </span>
+    *   `cancelled` - Subscription was cancelled by the user
 
-        </span>
-`</div></pre>
+    ```
+    {if user_cancelled}You cancelled this subscription on {date_cancelled} and it will expire on {end_date}{/if} 
+    ```
+    
+    *   `expired` - Subscription has expired completely.
+
+    ```
+    {if expired}This subscription has expired, either by user cancellation or failed payment.  But its over.  And it ended on {end_date}{/if} 
+    ```
 
 ### &#123;exp:eedonations:payments&#125;</a>
 
@@ -503,29 +503,32 @@ Returns:
 
 *   Single Variable Values:
 
-    *   <span class="tag">{charge_id}</span>
-    *   <span class="tag">{subscription_id}</span> (if linked to a subscription)
-    *   <span class="tag">{amount}</span>
-    *   <span class="tag">{date}</span>
+    *   `{charge_id}`
+    *   `{subscription_id}` (if linked to a subscription)
+    *   `{amount}`
+    *   `{date}`
+    
 *   Conditionals:
 
+	* 	`{refunded}` - TRUE if the payment has been refunded, else FALSE
+	
 ### &#123;exp:eedonations:billing_address&#125;</a>
 
 Retrieve and display the current billing address (entered on an order form) of the logged-in member.
 
 Returns:
 
-*   <span class="tag">first_name</span>
-*   <span class="tag">last_name</span>
-*   <span class="tag">address</span>
-*   <span class="tag">address_2</span>
-*   <span class="tag">city</span>
-*   <span class="tag">region</span>
-*   <span class="tag">region_other</span>
-*   <span class="tag">country</span>
-*   <span class="tag">postal_code</span>
-*   <span class="tag">company</span>
-*   <span class="tag">phone</span>
+*   `first_name`
+*   `last_name`
+*   `address`
+*   `address_2`
+*   `city`
+*   `region`
+*   `region_other`
+*   `country`
+*   `postal_code`
+*   `company`
+*   `phone`
 
 ### &#123;exp:eedonations:cancel&#125;</a>
 
@@ -539,17 +542,14 @@ Returns:
 
 *   Returns the HTML between the tags.&nbsp; It also implements the following conditionals to be used for confirmation/failure.
 
-    *   <span class="tag">cancelled</span> - The subscription was cancelled successfully.
-    *   <span class="tag">failed</span> - The cancellation failed either due to system error, the user not owning the subscription, or the subscription already being cancelled.
+    *   `cancelled` - The subscription was cancelled successfully.
+    *   `failed` - The cancellation failed either due to system error, the user not owning the subscription, or the subscription already being cancelled.
 
 Example:
 
 ```
-<div class="codeblock">`<span style="color: #000000">
-<span style="color: #0000BB">{exp</span><span style="color: #007700">:</span><span style="color: #0000BB">eedonations</span><span style="color: #007700">:</span><span style="color: #0000BB">cancel id</span><span style="color: #007700">=</span><span style="color: #DD0000">"{segment_3}"</span><span style="color: #0000BB">}
-{if cancelled}Your subscription was cancelled</span><span style="color: #007700">!</span><span style="color: #0000BB">{</span><span style="color: #007700">/</span><span style="color: #0000BB">if}
-{if failure}Subscription could not be cancelled</span><span style="color: #007700">.</span><span style="color: #0000BB">{</span><span style="color: #007700">/</span><span style="color: #0000BB">if}
-{</span><span style="color: #007700">/</span><span style="color: #0000BB">exp</span><span style="color: #007700">:</span><span style="color: #0000BB">eedonations</span><span style="color: #007700">:</span><span style="color: #0000BB">cancel} </span>
-</span>
-`</div>
+{exp:eedonations:cancel id="{segment_3}"}
+{if cancelled}Your subscription was cancelled!{/if}
+{if failure}Subscription could not be cancelled.{/if}
+{/exp:eedonations:cancel} 
 ```
