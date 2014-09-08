@@ -2,7 +2,7 @@
 
 ### Making Donations
 
-Members can make one-time and subscription donation payments on your website with the `&#123;exp:eedonations:donate_form&#125;`
+Members can make one-time and subscription donation payments on your website with the `{exp:eedonations:donate_form}`
 template tag.  With this, you can build a donation form.  At its most complex, you can allow for custom donation amounts and donation amount
 options and custom recurrence intervals or interval options.  At its simplest, you can hard-code a donation amount and simply require a 
 credit card (or PayPal account) for the member to make the donation with.
@@ -20,8 +20,8 @@ billing address.  This saves the user and administrator time when creating subsc
 
 ### Showing Payment/Subscription Records
 
-You can list a user's subscription and payment histories on your website using the `&#123;exp:eedonations:subscriptions&#125;` and
-`&#123;exp:eedonations:payments&#125;` tags.
+You can list a user's subscription and payment histories on your website using the `{exp:eedonations:subscriptions}` and
+`{exp:eedonations:payments}` tags.
 
 ### Managing Subscriptions
 
@@ -46,7 +46,7 @@ OpenGateway billing server.
 
 ### Renewing Subscriptions
 
-If a user would like to renew their donation subscription, you can simply pass a "renew" parameter in the `&#123;exp:eedonations:donate_form&#125;`.
+If a user would like to renew their donation subscription, you can simply pass a "renew" parameter in the `{exp:eedonations:donate_form}`.
 This "renew" parameter should hold the subscription ID of a previous subscription.
 
 A renewal is similar to an "update credit card" procedure, except that it will extend the expiry date of the user's subscription.
@@ -56,5 +56,5 @@ A renewal is similar to an "update credit card" procedure, except that it will e
 Subscriptions can be cancelled in the control panel by select &#8220;Cancel&#8221; beside any subscription with an &#8220;Active&#8221; status.
 
 Subscriptions can also be cancelled by the end user through a
-`&#123;exp:eedonations:cancel&#125;` template tag.&nbsp; Simply place this tag on a cancellation page and
+`{exp:eedonations:cancel}` template tag.&nbsp; Simply place this tag on a cancellation page and
 pass the subscription ID as a tag parameter.&nbsp; The subscription will be cancelled from all future charges.
