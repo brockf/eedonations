@@ -2,12 +2,12 @@
 
 **EE Donations** supports custom fields in your donation forms without any extra setup or customization.
 
-All you need to do is add your custom fields to your donation form created with the [{exp:eedonations:donate_form}](/docs/template_tags)
+All you need to do is add your custom fields to your donation form created with the [{exp:eedonations:donate_form}](/docs/template_tags.md)
 form tag.
 
-For example, you may add fields like "Food Drive" and "Keep my donation anonymous".  Each field is prefaced with "custom_field_", as in <span class="tag">custom_field_food_drive</span>.
+For example, you may add fields like "Food Drive" and "Keep my donation anonymous".  Each field is prefaced with "custom_field_", as in `custom_field_food_drive`.
 
-Note: To retrieve custom field data in a template, use the <span class="tag">{exp:eedonations:custom_fields}</span> tag documented [in the Template Tags documentation](/docs/template_tags)
+Note: To retrieve custom field data in a template, use the `{exp:eedonations:custom_fields}` tag documented [in the Template Tags documentation](/docs/template_tags.md)
 
 See the form below for an example of custom fields in an order form:
 
