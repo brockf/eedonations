@@ -159,7 +159,7 @@ Upon submission of the form, the following values are **required**:
 *   **eedonations_donate_form** - Set to any value
 *   _If you are not using PayPal Express Checkout:_
 
-        *   **cc_number** - Credit card number
+    *   **cc_number** - Credit card number
     *   **cc_name** - Name on the credit card
     *   **cc_expiry_month** - 2 digit representation of the year
     *   **cc_expiry_year** - 4 digit representation of the expiry year
@@ -462,7 +462,7 @@ Returns:
     *   <span class="tag">{end_date}</span> (if exists) - The date this subscription will expire
 *   Conditionals:
 
-        *   <span class="tag">active</span> - Subscription is still actively recurring.
+    *   <span class="tag">active</span> - Subscription is still actively recurring.
 <pre class="example"><div class="codeblock">`<span style="color: #000000">
 <span style="color: #0000BB">{if active}Your next charge will be {next_charge_date}{</span><span style="color: #007700">/</span><span style="color: #0000BB">if} </span>
 </span>
@@ -544,10 +544,12 @@ Returns:
 
 Example:
 
-    <pre class="example"><div class="codeblock">`<span style="color: #000000">
+```
+<div class="codeblock">`<span style="color: #000000">
 <span style="color: #0000BB">{exp</span><span style="color: #007700">:</span><span style="color: #0000BB">eedonations</span><span style="color: #007700">:</span><span style="color: #0000BB">cancel id</span><span style="color: #007700">=</span><span style="color: #DD0000">"{segment_3}"</span><span style="color: #0000BB">}
 {if cancelled}Your subscription was cancelled</span><span style="color: #007700">!</span><span style="color: #0000BB">{</span><span style="color: #007700">/</span><span style="color: #0000BB">if}
 {if failure}Subscription could not be cancelled</span><span style="color: #007700">.</span><span style="color: #0000BB">{</span><span style="color: #007700">/</span><span style="color: #0000BB">if}
 {</span><span style="color: #007700">/</span><span style="color: #0000BB">exp</span><span style="color: #007700">:</span><span style="color: #0000BB">eedonations</span><span style="color: #007700">:</span><span style="color: #0000BB">cancel} </span>
 </span>
-`</div></pre>
+`</div>
+```
