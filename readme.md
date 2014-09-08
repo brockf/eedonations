@@ -8,7 +8,7 @@ More specifically, it is a
 [module](http://expressionengine.com/public_beta/docs/development/modules.html), [extension](http://expressionengine.com/docs/development/extensions.html),
 and [control panel](http://expressionengine.com/public_beta/docs/development/modules.html#control_panel_file) for ExpressionEngine.
 
-It integrates easily with a few simple [template tags](/docs/template_tags).
+It integrates easily with a few simple [template tags](/docs/template_tags.md).
 
 EE Donations uses the free, open source [the OpenGateway billing engine](http://www.github.com/electricfunction/opengateway) to handle all of its billing, automated emails, and
 payment gateway integration.  OpenGateway should be downloaded
