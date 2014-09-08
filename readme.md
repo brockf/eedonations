@@ -1,7 +1,5 @@
 # EE Donations
 
-## Description
-
 EE Donations is a module for [ExpressionEngine](http://www.expressionengine.com) that brings flexible, simple, and secure
 donation payments to your website.  These can be one-time or subscription donations, created automatically on your website.
 More specifically, it is a
