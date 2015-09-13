@@ -57,7 +57,7 @@ class Eedonations_mcp {
         $this->EE->load->library('table');
 
         // load CSS
-        $this->EE->cp->add_to_head('<style type="text/css" media="screen">
+        $this->EE->cp->add_to_foot('<style type="text/css" media="screen">
         								div.eedonations_box {
         									border: 1px solid #ccc;
         									background-color: #fff;
@@ -104,7 +104,7 @@ class Eedonations_mcp {
         							</style>');
 
         // add JavaScript
-        $this->EE->cp->add_to_head('<script type="text/javascript">
+        $this->EE->cp->add_to_foot('<script type="text/javascript">
         								$(document).ready(function() {
         									$(\'a.confirm\').click(function () {
         										if (!confirm(\'Are you sure you want to delete this?\')) {
@@ -116,10 +116,11 @@ class Eedonations_mcp {
 	}
 	
 	function set_page_title ($title) {
-		if ($this->EE->config->item('app_version') >= 260) {
+		//thanks @derek.jones for pointing out version compare in #eecms slack channel
+		if (version_compare($this->EE->config->item('app_version'), '2.6.0','>=')) {
 			$this->EE->view->cp_page_title = $title;
 		} else {
-			$this->set_page_title($title);
+			$this->EE->cp->set_variable('cp_page_title', $title);
 		}
 	}
 
@@ -1231,7 +1232,7 @@ class Eedonations_mcp {
 	function countries () {
 		$this->set_page_title($this->EE->lang->line('eedonations_available_countries'));
 
-		 $this->EE->cp->add_to_head('<script type="text/javascript">
+		 $this->EE->cp->add_to_foot('<script type="text/javascript">
         								function uncheck_countries () {
         									$(\'input.countries\').attr(\'checked\',false);
         								}
